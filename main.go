@@ -15,11 +15,10 @@ import (
 	"strings"
 )
 
-// gitCommit will be the hash that the binary was built from
-// and will be populated by the Makefile
+// gitCommit will be the hash that the binary was built from and will be populated by the Makefile
 var gitCommit = ""
 
-var defaultUserAgent = "skopeo/" + version.Version
+var defaultUserAgent = "repomgr/" + version.Version
 
 // requireSubcommand returns an error if no sub command is provided
 // This was copied from podman: `github.com/containers/podman/cmd/podman/validate/args.go
