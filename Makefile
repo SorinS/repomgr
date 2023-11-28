@@ -10,13 +10,14 @@ DATE=$(shell date +%Y%m%d_%H%M%S)
 VERSION=0.1.0
 COMMIT=$(shell git rev-parse HEAD)
 LDFLAGS=-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.buildDate=$(DATE)"
+TAGS="remote exclude_graphdriver_btrfs btrfs_noversion exclude_graphdriver_devicemapper containers_image_openpgp"
 
 # Compilation targets
 #all: macosx-arm64 linux-amd64 windows-amd64
 all: macosx
 
 macosx:
-	GOOS=darwin GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o build/$(BINARY_NAME)-macosx-arm64.bin
+	GOOS=darwin GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o build/$(BINARY_NAME)-macosx-arm64.bin -tags $(TAGS)
 
 linux:
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o build/$(BINARY_NAME)-linux-amd64.bin
