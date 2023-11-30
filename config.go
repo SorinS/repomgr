@@ -38,6 +38,7 @@ type Schedule struct {
 }
 
 type Value map[string]string
+type Headers map[string]string
 
 type Credential struct {
 	Name  string `yaml:"name,omitempty"`
@@ -63,6 +64,19 @@ type Schedules struct {
 
 type Credentials struct {
 	Credential []Credential `yaml:"credential"`
+}
+
+type Source struct {
+	Name       string  `yaml:"name,omitempty"`
+	URL        string  `yaml:"url,omitempty"`
+	Credential string  `yaml:"credential,omitempty"`
+	Parameters string  `yaml:"parameters,omitempty"`
+	Path       string  `yaml:"path,omitempty"`
+	Headers    Headers `yaml:"headers,omitempty"`
+}
+
+type Scanreports struct {
+	Source []Source `yaml:"source"`
 }
 
 func parseConfig(cfgFilePath string) (*Configuration, error) {

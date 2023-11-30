@@ -61,6 +61,20 @@ schedules:
     - interval: 7*24h
     - frequency: 1
 
+scanreports:
+  - source:
+      - name: wiz
+      - url: "http://wiz.io"
+      - credential: cred1
+      - parameters: "a=b&c=d"
+      - path: "/report"
+      - headers: { "Content-Type": "application/json", "TTL": 3600}
+  - source:
+      - name: veracode
+      - url: "http://veracode"
+      - credential: cred2
+      - path: "/"
+
 credentials:
   - credential:
       - name: cred1
