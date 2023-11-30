@@ -1,0 +1,72 @@
+---
+repositories:
+  - repository:
+    - name: dockerhub
+    - url:
+    - credential: cred1
+    - rules: rule1,rule2
+    - schedule: daily
+  - repository:
+     - name: nexus1
+     - url:
+     - credential: cred2
+     - rules: rule2
+  - repository:
+      - name: nexus2
+      - url:
+      - credential: cred1
+      - rules: rule1,rule2,rule3
+
+rules:
+  - rule:
+    - name: rule1
+    - constraints:
+        - c1
+        - c2
+        - c3
+  - rule:
+      - name: rule2
+      - constraints:
+          - c1
+          - c2
+          - c3
+  - rule:
+      - name: rule3
+      - constraints:
+          - c1
+          - c2
+          - c3
+
+constraints:
+  - constraint:
+      - name: c1
+      - expression: LastPulled > 30d
+      - action: quarantine
+  - constraint:
+      - name: c2
+      - expression: NrVersions > 3
+      - action: deleteOlder
+  - constraint:
+      - name: c3
+      - expression: NrVersions > 3
+      - action: alert
+
+schedules:
+  - schedule:
+    - name: daily
+    - interval: 24h
+    - frequency: 1
+  - schedule:
+    - name: weekly
+    - interval: 7*24h
+    - frequency: 1
+
+credentials:
+  - credential:
+      - name: cred1
+      - type: vault
+      - value: { "vault_auth_url": "http://vau", "vault_role": "blah", "vault_secret_url": "https://vsu", "auth_mode": "aws" }
+  - credential:
+      - name: cred2
+      - type: basic
+      - value: { "user": "joe", "password": "doe"}

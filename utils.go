@@ -382,3 +382,23 @@ func isNotFoundImageError(err error) bool {
 	return isDockerManifestUnknownError(err) ||
 		errors.Is(err, ocilayout.ImageNotFoundError{})
 }
+
+func ReadFileContent(filePath string) ([]byte, error) {
+	if err := FileExists(filePath); err != nil {
+		return []byte{}, err
+	}
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return []byte{}, err
+	}
+	return content, nil
+}
+
+func FileExists(filePath string) error {
+	if _, err := os.Stat(filePath); err != nil {
+		if os.IsNotExist(err) {
+			return err
+		}
+	}
+	return nil
+}
