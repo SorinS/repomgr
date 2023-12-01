@@ -23,7 +23,16 @@ func (test *testOptions) run(args []string, stdout io.Writer) error {
 	}
 	fmt.Fprintf(stdout, "Found: %d credentials\n", len(cfg.Credentials))
 	fmt.Fprintf(stdout, "Found: %d repositories\n", len(cfg.Repositories))
-	fmt.Fprintf(stdout, "Found: %d schedules\n", len(cfg.Schedules))
-	fmt.Fprintf(stdout, "Found: %d report sources\n", len(cfg.ReportSource))
+	fmt.Fprintf(stdout, "Found: %d report sources\n", len(cfg.Reportsources))
+
+	for _, cred := range cfg.Credentials {
+		fmt.Printf("Cred Name: %s\n", cred.Name)
+		fmt.Printf("Credential value: %s\n", getCredential(&cred))
+	}
+
+	for _, repo := range cfg.Repositories {
+		fmt.Fprintf(stdout, "Repo: %s\n", repo.Name)
+	}
+
 	return nil
 }

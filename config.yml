@@ -1,48 +1,31 @@
 ---
 repositories:
-  - repository:
-    - name: "dockerhub"
-    - url: "http://dockerhub.com"
-    - credential: "cred1"
-    - schedule: daily
-  - repository:
-     - name: nexus1
-     - url: "http://nexus.io"
-     - credential: cred2
-     - schedule: daily
-  - repository:
-     - name: nexus2
-     - url: "http://quay.io"
-     - credential: cred1
-     - schedule: daily
+  - name: "dockerhub"
+    url: "http://dockerhub.com"
+    credential: "cred1"
 
-schedules:
-  - schedule:
-    - name: daily
-    - interval: 24h
-    - frequency: 1
-  - schedule:
-    - name: weekly
-    - interval: 7*24h
-    - frequency: 1
+  - name: nexus1
+    url: "http://nexus.io"
+    credential: cred2
+
+  - name: nexus2
+    url: "http://quay.io"
+    credential: cred1
 
 reportsources:
-  - source:
-      - name: wiz
-      - url: "http://wiz.io"
-      - credential: cred1
-      - parameters: "a=b&c=d"
-      - path: "/report"
-      - payload: "@query.graphql"
-      - headers: { "Content-Type": "application/json", "TTL": 3600}
-
+    - name: wiz
+      url: "http://wiz.io"
+      credential: cred1
+      parameters: "a=b&c=d"
+      path: "/report"
+      payload: "@query.graphql"
+      headers: { "Content-Type": "application/json", "TTL": 3600}
 
 credentials:
-  - credential:
-      - name: cred1
-      - type: vault
-      - value: { "vault_auth_url": "http://vau", "vault_role": "blah", "vault_secret_url": "https://vsu", "auth_mode": "aws" }
-  - credential:
-      - name: cred2
-      - type: basic
-      - value: { "user": "joe", "password": "doe"}
+    - name: cred1
+      type: vault
+      data: { "vault_auth_url": "http://vau", "vault_role": "blah", "vault_secret_url": "https://vsu", "auth_mode": "aws" }
+      
+    - name: cred2
+      type: basic
+      data: { "user": "joe", "password": "doe"}
