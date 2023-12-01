@@ -22,6 +22,7 @@ type globalOptions struct {
 	commandTimeout     time.Duration           // Timeout for the command execution
 	registriesConfPath string                  // Path to the "registries.conf" file
 	tmpDir             string                  // Path to use for big temporary files
+	cfgFile            string                  // SS - config file path
 }
 
 type copyOptions struct {

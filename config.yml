@@ -1,55 +1,20 @@
 ---
 repositories:
   - repository:
-    - name: dockerhub
-    - url:
-    - credential: cred1
-    - rules: rule1,rule2
+    - name: "dockerhub"
+    - url: "http://dockerhub.com"
+    - credential: "cred1"
     - schedule: daily
   - repository:
      - name: nexus1
-     - url:
+     - url: "http://nexus.io"
      - credential: cred2
-     - rules: rule2
+     - schedule: daily
   - repository:
-      - name: nexus2
-      - url:
-      - credential: cred1
-      - rules: rule1,rule2,rule3
-
-rules:
-  - rule:
-    - name: rule1
-    - constraints:
-        - c1
-        - c2
-        - c3
-  - rule:
-      - name: rule2
-      - constraints:
-          - c1
-          - c2
-          - c3
-  - rule:
-      - name: rule3
-      - constraints:
-          - c1
-          - c2
-          - c3
-
-constraints:
-  - constraint:
-      - name: c1
-      - expression: LastPulled > 30d
-      - action: quarantine
-  - constraint:
-      - name: c2
-      - expression: NrVersions > 3
-      - action: deleteOlder
-  - constraint:
-      - name: c3
-      - expression: NrVersions > 3
-      - action: alert
+     - name: nexus2
+     - url: "http://quay.io"
+     - credential: cred1
+     - schedule: daily
 
 schedules:
   - schedule:
@@ -61,19 +26,16 @@ schedules:
     - interval: 7*24h
     - frequency: 1
 
-scanreports:
+reportsources:
   - source:
       - name: wiz
       - url: "http://wiz.io"
       - credential: cred1
       - parameters: "a=b&c=d"
       - path: "/report"
+      - payload: "@query.graphql"
       - headers: { "Content-Type": "application/json", "TTL": 3600}
-  - source:
-      - name: veracode
-      - url: "http://veracode"
-      - credential: cred2
-      - path: "/"
+
 
 credentials:
   - credential:

@@ -18,6 +18,9 @@ import (
 // gitCommit will be the hash that the binary was built from and will be populated by the Makefile
 var gitCommit = ""
 
+// buildDate will be injected using ldflags
+var buildDate = ""
+
 var defaultUserAgent = "repomgr/" + version.Version
 
 // requireSubcommand returns an error if no sub command is provided
@@ -56,7 +59,7 @@ func createApp() (*cobra.Command, *globalOptions) {
 		TraverseChildren: true,
 	}
 	if gitCommit != "" {
-		rootCommand.Version = fmt.Sprintf("%s commit: %s", version.Version, gitCommit)
+		rootCommand.Version = fmt.Sprintf("%s, commit: %s, build date: %s", version.Version, gitCommit, buildDate)
 	} else {
 		rootCommand.Version = version.Version
 	}
@@ -72,6 +75,7 @@ func createApp() (*cobra.Command, *globalOptions) {
 	rootCommand.PersistentFlags().StringVar(&opts.overrideVariant, "override-variant", "", "use `VARIANT` instead of the running architecture variant for choosing images")
 	rootCommand.PersistentFlags().DurationVar(&opts.commandTimeout, "command-timeout", 0, "timeout for the command execution")
 	rootCommand.PersistentFlags().StringVar(&opts.registriesConfPath, "registries-conf", "", "path to the registries.conf file")
+	rootCommand.PersistentFlags().StringVar(&opts.cfgFile, "cfgFile", "config.yml", "path to configuration file")
 	if err := rootCommand.PersistentFlags().MarkHidden("registries-conf"); err != nil {
 		logrus.Fatal("unable to mark registries-conf flag as hidden")
 	}
@@ -93,6 +97,7 @@ func createApp() (*cobra.Command, *globalOptions) {
 		standaloneVerifyCmd(),
 		tagsCmd(&opts),
 		untrustedSignatureDumpCmd(),
+		testCmd(&opts),
 	)
 	return rootCommand, &opts
 }
@@ -501,18 +506,33 @@ func proxyCmd(global *globalOptions) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "experimental-image-proxy [command options] IMAGE",
 		Short: "Interactive proxy for fetching container images (EXPERIMENTAL)",
-		Long:  `Run skopeo as a proxy, supporting HTTP requests to fetch manifests and blobs.`,
+		Long:  `Run repomgr as a proxy, supporting HTTP requests to fetch manifests and blobs.`,
 		RunE:  commandAction(opts.run),
 		Args:  cobra.ExactArgs(0),
 		// Not stabilized yet
 		Hidden:  true,
-		Example: `skopeo experimental-image-proxy --sockfd 3`,
+		Example: `repomgr experimental-image-proxy --sockfd 3`,
 	}
 	adjustUsage(cmd)
 	flags := cmd.Flags()
 	flags.AddFlagSet(&sharedFlags)
 	flags.AddFlagSet(&imageFlags)
 	flags.IntVar(&opts.sockFd, "sockfd", 0, "Serve on opened socket pair (default 0/stdin)")
+	return cmd
+}
+
+func testCmd(global *globalOptions) *cobra.Command {
+	opts := testOptions{
+		global: global,
+	}
+	cmd := &cobra.Command{
+		Use:     "test",
+		Short:   "test configuration processing and other things (EXPERIMENTAL)",
+		Long:    `test configuration processing and other things (EXPERIMENTAL)`,
+		RunE:    commandAction(opts.run),
+		Args:    cobra.ExactArgs(0),
+		Example: `repomgr experimental-image-proxy --sockfd 3`,
+	}
 	return cmd
 }
 
