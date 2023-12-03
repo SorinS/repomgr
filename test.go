@@ -27,11 +27,13 @@ func (test *testOptions) run(args []string, stdout io.Writer) error {
 
 	for _, cred := range cfg.Credentials {
 		fmt.Printf("Cred Name: %s\n", cred.Name)
-		fmt.Printf("Credential value: %s\n", getCredential(&cred))
+		fmt.Printf("Credential value: %s\n", GetCredential(&cred))
 	}
 
 	for _, repo := range cfg.Repositories {
-		fmt.Fprintf(stdout, "Repo: %s\n", repo.Name)
+		fmt.Fprintf(stdout, "Repo: name=%s\n", repo.Name)
+		fmt.Fprintf(stdout, "Repo: url=%s\n", repo.URL)
+		fmt.Fprintf(stdout, "Repo: tlsverify=%t\n", repo.TLSVerify)
 	}
 
 	return nil

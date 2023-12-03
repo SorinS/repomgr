@@ -3,6 +3,7 @@ module repomgr
 go 1.20
 
 require (
+	github.com/aws/aws-sdk-go v1.48.11
 	github.com/containers/common v0.57.0
 	github.com/containers/image/v5 v5.29.0
 	github.com/containers/ocicrypt v1.1.9
@@ -67,6 +68,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.5 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.3 // indirect

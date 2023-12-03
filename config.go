@@ -19,6 +19,7 @@ type Repository struct {
 	Name       string `yaml:"name,omitempty"`
 	URL        string `yaml:"url,omitempty"`
 	Credential string `yaml:"credential,omitempty"`
+	TLSVerify  bool   `yaml:"tlsverify,omitempty"`
 }
 
 type Source struct {

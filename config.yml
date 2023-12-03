@@ -3,6 +3,7 @@ repositories:
   - name: "dockerhub"
     url: "http://dockerhub.com"
     credential: "cred1"
+    tlsverify: true
 
   - name: nexus1
     url: "http://nexus.io"
@@ -25,7 +26,7 @@ credentials:
     - name: cred1
       type: vault
       data: { "vault_auth_url": "http://vau", "vault_role": "blah", "vault_secret_url": "https://vsu", "auth_mode": "aws" }
-      
+
     - name: cred2
       type: basic
       data: { "user": "joe", "password": "doe"}

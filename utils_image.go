@@ -402,3 +402,19 @@ func FileExists(filePath string) error {
 	}
 	return nil
 }
+
+func MapToString[K comparable, V any](m map[K]V, keyToString func(K) string, valueToString func(V) string) string {
+	var builder strings.Builder
+	for key, value := range m {
+		builder.WriteString("[")
+		builder.WriteString(keyToString(key))
+		builder.WriteString(": ")
+		builder.WriteString(valueToString(value))
+		builder.WriteString("], ")
+	}
+	return builder.String()
+}
+
+func IdentStr(k string) string {
+	return k
+}

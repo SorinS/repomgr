@@ -666,11 +666,11 @@ func (opts *loginOptions) run(args []string, stdout io.Writer) error {
 func (opts *logoutOptions) run(args []string, stdout io.Writer) error {
 	opts.logoutOpts.Stdout = stdout
 	opts.logoutOpts.AcceptRepositories = true
-	sys := opts.global.newSystemContext()
+	sysCtx := opts.global.newSystemContext()
 	if opts.tlsVerify.Present() {
-		sys.DockerInsecureSkipTLSVerify = types.NewOptionalBool(!opts.tlsVerify.Value())
+		sysCtx.DockerInsecureSkipTLSVerify = types.NewOptionalBool(!opts.tlsVerify.Value())
 	}
-	return auth.Logout(sys, &opts.logoutOpts, args)
+	return auth.Logout(sysCtx, &opts.logoutOpts, args)
 }
 
 func (opts *manifestDigestOptions) run(args []string, stdout io.Writer) error {
