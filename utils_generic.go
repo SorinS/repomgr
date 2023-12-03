@@ -70,7 +70,7 @@ func IsValidUUID(uuid string) bool {
 	return r.MatchString(uuid)
 }
 
-func CheckNotEmpty[T comparable](values []T) error {
+func CheckNotEmpty[T comparable](values ...T) error {
 	var zero T
 	for _, value := range values {
 		if value == zero {
