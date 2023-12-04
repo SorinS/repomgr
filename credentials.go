@@ -9,6 +9,7 @@ import (
 func GetCredential(cred *Credential) string {
 	switch strings.ToLower(cred.Type) {
 	case "vault":
+		//FIXME: Just returning the content of the secret access config here
 		return MapToString(cred.Data, IdentStr, IdentStr)
 	case "basic":
 		var user, password string
@@ -22,18 +23,9 @@ func GetCredential(cred *Credential) string {
 		}
 		return fmt.Sprintf("%s:%s", user, password)
 	default:
-		return ""
+		return ":"
 	}
 
-}
-
-func GetCredByName(credName string, cfg *Configuration) *Credential {
-	for _, cred := range cfg.Credentials {
-		if cred.Name == credName {
-			return &cred
-		}
-	}
-	return nil
 }
 
 func GetVaultCreds(secretData string, secretType string) (string, string, error) {
@@ -54,4 +46,13 @@ func GetBasicCreds(basic string) (string, string, error) {
 		return s[0], s[1], nil
 	}
 	return "", "", errors.New("invalid basic secret")
+}
+
+func GetCredByName(credName string, cfg *Configuration) *Credential {
+	for _, cred := range cfg.Credentials {
+		if cred.Name == credName {
+			return &cred
+		}
+	}
+	return nil
 }

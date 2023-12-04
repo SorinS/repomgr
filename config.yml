@@ -13,6 +13,14 @@ repositories:
     url: "http://quay.io"
     credential: cred1
 
+  - name: nexus3
+    policyPath: policies.conf
+    registriesDirPath: registry
+    registriesConfPath: registry/registries.conf
+    tmpDir: /tmp
+    cfgFile: repo.conf
+    commandTimeout: 100
+
 reportsources:
     - name: wiz
       url: "http://wiz.io"
@@ -25,7 +33,7 @@ reportsources:
 credentials:
     - name: cred1
       type: vault
-      data: { "vault_auth_url": "http://vau", "vault_role": "blah", "vault_secret_url": "https://vsu", "auth_mode": "aws" }
+      data: { "auth_url": "http://vau", "role_name": "blah", "role_type":"aws", "secret_url": "https://vsu" }
 
     - name: cred2
       type: basic

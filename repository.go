@@ -6,38 +6,45 @@ import (
 	"fmt"
 	"github.com/containers/common/pkg/auth"
 	commonFlag "github.com/containers/common/pkg/flag"
+	"io"
 	"reflect"
+	"time"
 )
 
-func Login(cfg *Configuration, repoName string, args []string, buf *bytes.Buffer) error {
+func Login(cfg *Configuration, repoName string, args []string, stdout io.Writer) error {
 	repo := GetRepoByName(repoName, cfg)
 
 	if repo == nil {
 		return errors.New(fmt.Sprintf("repository named: %s is not configured", repoName))
 	}
 
+	user, pwd, err := GetRepoCreds(repo, cfg)
+	if err != nil {
+		return errors.New(fmt.Sprintf("unable to get credentials from: %s", repo.Credential))
+	}
+
 	optsGlobal := &globalOptions{
 		debug:              false,
 		tlsVerify:          commonFlag.OptionalBool{},
-		policyPath:         "",
+		policyPath:         repo.PolicyPath,
 		insecurePolicy:     true,
-		registriesDirPath:  "",
-		commandTimeout:     0,
-		registriesConfPath: "",
-		tmpDir:             "",
-		cfgFile:            "",
+		registriesDirPath:  repo.RegistriesDirPath,
+		commandTimeout:     time.Duration(repo.CommandTimeout) * time.Second,
+		registriesConfPath: repo.RegistriesConfPath,
+		tmpDir:             repo.TmpDir,
+		cfgFile:            repo.CfgFile,
 	}
 
 	optsAuthLogin := auth.LoginOptions{
 		AuthFile:                  "",
 		DockerCompatAuthFile:      "",
 		CertDir:                   "",
-		Password:                  "",
-		Username:                  "",
+		Password:                  pwd,
+		Username:                  user,
 		StdinPassword:             false,
 		GetLoginSet:               false,
-		Verbose:                   false,
-		AcceptRepositories:        false,
+		Verbose:                   true,
+		AcceptRepositories:        true,
 		AcceptUnspecifiedRegistry: true,
 		NoWriteBack:               false,
 	}
@@ -48,7 +55,7 @@ func Login(cfg *Configuration, repoName string, args []string, buf *bytes.Buffer
 		tlsVerify: NewOptionalBool(repo.TLSVerify),
 	}
 
-	return opts.run(args, buf)
+	return opts.run(args, stdout)
 
 }
 
@@ -72,4 +79,12 @@ func NewOptionalBool(val bool) commonFlag.OptionalBool {
 		reflect.ValueOf(&ob).Elem().FieldByName("value").SetBool(true)
 	}
 	return ob
+}
+
+func GetRepoCreds(repo *Repository, cfg *Configuration) (string, string, error) {
+	cred := GetCredByName(repo.Credential, cfg)
+	if cred == nil {
+		return "", "", errors.New("unable to find the repo credentials")
+	}
+	return GetBasicCreds(GetCredential(cred))
 }

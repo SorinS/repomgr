@@ -16,10 +16,16 @@ type Configuration struct {
 }
 
 type Repository struct {
-	Name       string `yaml:"name,omitempty"`
-	URL        string `yaml:"url,omitempty"`
-	Credential string `yaml:"credential,omitempty"`
-	TLSVerify  bool   `yaml:"tlsverify,omitempty"`
+	Name               string `yaml:"name,omitempty"`
+	URL                string `yaml:"url,omitempty"`
+	Credential         string `yaml:"credential,omitempty"`
+	TLSVerify          bool   `yaml:"tlsverify,omitempty"`
+	PolicyPath         string `yaml:"policyPath,omitempty"`
+	RegistriesDirPath  string `yaml:"registriesDirPath,omitempty"`
+	RegistriesConfPath string `yaml:"registriesConfPath,omitempty"`
+	TmpDir             string `yaml:"tmpDir,omitempty"`
+	CfgFile            string `yaml:"cfgFile,omitempty"`
+	CommandTimeout     int64  `yaml:"commandTimeout,omitempty"`
 }
 
 type Source struct {

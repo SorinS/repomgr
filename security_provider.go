@@ -1,5 +1,7 @@
 package main
 
-func outpostQuery() {
+import "errors"
 
+func SecReportQuery(repo Repository) error {
+	return errors.New("not implemented yet")
 }
