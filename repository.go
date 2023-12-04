@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func GetGlobalOptions(cfg *Configuration, repo *Repository) *globalOptions {
+func GetGlobalOptions(repo *Repository) *globalOptions {
 	return &globalOptions{
 		debug:              false,
 		tlsVerify:          commonFlag.OptionalBool{},
@@ -30,7 +30,7 @@ func Login(cfg *Configuration, repo *Repository, args []string, stdout io.Writer
 		return errors.New(fmt.Sprintf("unable to get credentials from: %s", repo.Credential))
 	}
 
-	optsGlobal := GetGlobalOptions(cfg, repo)
+	optsGlobal := GetGlobalOptions(repo)
 
 	optsAuthLogin := auth.LoginOptions{
 		AuthFile:                  "",
@@ -57,7 +57,7 @@ func Login(cfg *Configuration, repo *Repository, args []string, stdout io.Writer
 }
 
 func Logout(cfg *Configuration, repo *Repository, args []string, stdout io.Writer) error {
-	optsGlobal := GetGlobalOptions(cfg, repo)
+	optsGlobal := GetGlobalOptions(repo)
 	optsLogout := auth.LogoutOptions{
 		AuthFile:                  "",
 		DockerCompatAuthFile:      "",
