@@ -49,7 +49,7 @@ func Login(cfg *Configuration, repo *Repository, args []string, stdout io.Writer
 	opts := &loginOptions{
 		global:    optsGlobal,
 		loginOpts: optsAuthLogin,
-		tlsVerify: NewOptionalBool(repo.TLSVerify),
+		tlsVerify: commonFlag.OptionalBool{},
 	}
 
 	return opts.run(args, stdout)
@@ -69,7 +69,7 @@ func Logout(cfg *Configuration, repo *Repository, args []string, stdout io.Write
 	opts := logoutOptions{
 		global:     optsGlobal,
 		logoutOpts: optsLogout,
-		tlsVerify:  NewOptionalBool(repo.TLSVerify),
+		tlsVerify:  commonFlag.OptionalBool{},
 	}
 	return opts.run(args, stdout)
 
