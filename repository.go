@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/containers/common/pkg/auth"
@@ -11,29 +10,27 @@ import (
 	"time"
 )
 
-func Login(cfg *Configuration, repoName string, args []string, stdout io.Writer) error {
-	repo := GetRepoByName(repoName, cfg)
-
-	if repo == nil {
-		return errors.New(fmt.Sprintf("repository named: %s is not configured", repoName))
-	}
-
-	user, pwd, err := GetRepoCreds(repo, cfg)
-	if err != nil {
-		return errors.New(fmt.Sprintf("unable to get credentials from: %s", repo.Credential))
-	}
-
-	optsGlobal := &globalOptions{
+func GetGlobalOptions(cfg *Configuration, repo *Repository) *globalOptions {
+	return &globalOptions{
 		debug:              false,
 		tlsVerify:          commonFlag.OptionalBool{},
 		policyPath:         repo.PolicyPath,
-		insecurePolicy:     true,
+		insecurePolicy:     true, //FIXME: parametrize this
 		registriesDirPath:  repo.RegistriesDirPath,
 		commandTimeout:     time.Duration(repo.CommandTimeout) * time.Second,
 		registriesConfPath: repo.RegistriesConfPath,
 		tmpDir:             repo.TmpDir,
 		cfgFile:            repo.CfgFile,
 	}
+}
+
+func Login(cfg *Configuration, repo *Repository, args []string, stdout io.Writer) error {
+	user, pwd, err := GetRepoCreds(repo, cfg)
+	if err != nil {
+		return errors.New(fmt.Sprintf("unable to get credentials from: %s", repo.Credential))
+	}
+
+	optsGlobal := GetGlobalOptions(cfg, repo)
 
 	optsAuthLogin := auth.LoginOptions{
 		AuthFile:                  "",
@@ -45,7 +42,7 @@ func Login(cfg *Configuration, repoName string, args []string, stdout io.Writer)
 		GetLoginSet:               false,
 		Verbose:                   true,
 		AcceptRepositories:        true,
-		AcceptUnspecifiedRegistry: true,
+		AcceptUnspecifiedRegistry: false,
 		NoWriteBack:               false,
 	}
 
@@ -59,8 +56,23 @@ func Login(cfg *Configuration, repoName string, args []string, stdout io.Writer)
 
 }
 
-func Logout(cfg *Configuration, repoName string, args []string, buf *bytes.Buffer) error {
-	return errors.New("not implemented")
+func Logout(cfg *Configuration, repo *Repository, args []string, stdout io.Writer) error {
+	optsGlobal := GetGlobalOptions(cfg, repo)
+	optsLogout := auth.LogoutOptions{
+		AuthFile:                  "",
+		DockerCompatAuthFile:      "",
+		All:                       false,
+		AcceptRepositories:        false,
+		Stdout:                    nil,
+		AcceptUnspecifiedRegistry: true,
+	}
+	opts := logoutOptions{
+		global:     optsGlobal,
+		logoutOpts: optsLogout,
+		tlsVerify:  NewOptionalBool(repo.TLSVerify),
+	}
+	return opts.run(args, stdout)
+
 }
 
 func GetRepoByName(repoName string, cfg *Configuration) *Repository {

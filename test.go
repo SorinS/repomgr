@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 )
 
 type testOptions struct {
@@ -23,20 +24,29 @@ func (test *testOptions) run(args []string, stdout io.Writer) error {
 		return err
 	}
 	printConfig(cfg, stdout)
+	return repoLoging("nexus1", cfg)
 
-	buf := new(bytes.Buffer)
-	err = repoLogin(cfg, buf)
-	if err != nil {
-		fmt.Printf("error logging in: %v, stdout: %s", err, buf.String())
-	} else {
-		fmt.Printf("success: %s", buf.String())
-	}
-
-	return nil
 }
 
-func repoLogin(cfg *Configuration, stdout io.Writer) error {
-	return Login(cfg, "nexus1", []string{}, stdout)
+func repoLoging(repoName string, cfg *Configuration) error {
+	repo := GetRepoByName(repoName, cfg)
+	if repo == nil {
+		return errors.New("non-existing repository configuration")
+	}
+	buf := new(bytes.Buffer)
+	if err := Login(cfg, repo, []string{repo.URL}, buf); err != nil {
+		fmt.Printf("failure: error: %v, stdout: %s\n\n", err, buf.String())
+		return err
+	}
+	fmt.Printf("login success: %s\n\n", buf.String())
+	time.Sleep(1 * time.Second)
+	fmt.Printf("logging out of: %s\n", repoName)
+	if err := Logout(cfg, repo, []string{repo.URL}, buf); err != nil {
+		fmt.Printf("failure: error: %v, stdout: %s\n\n", err, buf.String())
+		return err
+	}
+	fmt.Printf("logout success: %s\n\n", buf.String())
+	return nil
 }
 
 func printConfig(cfg *Configuration, stdout io.Writer) {
